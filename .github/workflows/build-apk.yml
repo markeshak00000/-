@@ -1,10 +1,8 @@
 name: Build Andalus APK Final Pro
-
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,29 +11,21 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
       - uses: android-actions/setup-android@v3
-      - name: Install deps
-        run: npm install
-      - name: Add Android if needed
-        run: |
+      - run: npm install
+      - run: |
           if [ ! -d "android" ]; then npx cap add android; fi
-      - name: Copy web assets
-        run: npx cap copy android
-      - name: Build APK Debug
-        run: |
+      - run: npx cap copy android
+      - run: |
           chmod +x android/gradlew
           cd android
           ./gradlew assembleDebug
-      - name: Rename APK
-        run: cp android/app/build/outputs/apk/debug/app-debug.apk Andalus-Home-Store-v1.0.0.apk
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - run: cp android/app/build/outputs/apk/debug/app-debug.apk Andalus-Home-Store-v1.0.0.apk
+      - uses: actions/upload-artifact@v4
         with:
           name: الاندلس-للادوات-المنزلية-APK
           path: Andalus-Home-Store-v1.0.0.apk
-          retention-days: 30
