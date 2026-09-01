@@ -1,7 +1,7 @@
 name: Build Andalus APK Final Pro
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 jobs:
   build:
@@ -18,12 +18,17 @@ jobs:
       - uses: android-actions/setup-android@v3
       - run: npm install
       - run: |
-          if [ ! -d "android" ]; then npx cap add android; fi
+          mkdir -p www
+          cp index.html www/index.html
+          cp app-icon.png www/ 2>/dev/null || true
+          ls -la www
+      - run: |
+          if [! -d "android" ]; then npx cap add android; fi
       - run: npx cap copy android
       - run: |
           chmod +x android/gradlew
           cd android
-          ./gradlew assembleDebug
+         ./gradlew assembleDebug
       - run: cp android/app/build/outputs/apk/debug/app-debug.apk Andalus-Home-Store-v1.0.0.apk
       - uses: actions/upload-artifact@v4
         with:
